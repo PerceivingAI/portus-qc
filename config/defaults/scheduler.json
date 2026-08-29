@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "minIntervalMs": 10000,
+  "maxIntervalMs": 86400000,
+  "overlapPolicy": "drop"
+}

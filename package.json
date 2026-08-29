@@ -1,0 +1,38 @@
+{
+  "name": "portus-qc",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace @portus-qc/app",
+    "doctor": "npm run doctor --workspace @portus-qc/app",
+    "verify:structure": "node scripts/check-structure.mjs",
+    "verify:release": "node scripts/check-release.mjs",
+    "typecheck:engine": "npm run typecheck --workspace @portus-qc/contracts --workspace @portus-qc/media --workspace @portus-qc/screening-core --workspace @portus-qc/engine --workspace @portus-qc/vision --workspace @portus-qc/camsnap --workspace @portus-qc/inspection-config --if-present",
+    "test:engine": "npm run test --workspace @portus-qc/contracts --workspace @portus-qc/media --workspace @portus-qc/screening-core --workspace @portus-qc/engine --workspace @portus-qc/vision --workspace @portus-qc/camsnap --workspace @portus-qc/inspection-config --if-present",
+    "verify:engine": "npm run verify:structure && npm run typecheck:engine && npm run test:engine",
+    "typecheck:app": "npm run typecheck --workspace @portus-qc/app",
+    "test:app": "npm run test --workspace @portus-qc/app",
+    "verify:app": "npm run typecheck:app && npm run check:web --workspace @portus-qc/app && npm run test:app",
+    "typecheck": "npm run typecheck:engine && npm run typecheck:app",
+    "test": "npm run test:engine && npm run test:app",
+    "verify": "npm run verify:engine && npm run verify:app && npm run verify:release"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.4.0",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2"
+  },
+  "license": "Apache-2.0",
+  "description": "Portus QC reusable visual-quality engine and bundled local application.",
+  "allowScripts": {
+    "esbuild": false
+  }
+}

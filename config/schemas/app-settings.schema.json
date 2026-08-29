@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portus-qc.dev/schemas/app-settings.schema.json",
+  "title": "Portus QC application settings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["runtime", "inference", "camera", "console", "scheduler", "video", "media", "artifacts"],
+  "properties": {
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "host", "port", "openBrowser", "dataRoot", "camsnapExecutable", "ffmpegExecutable"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "host": { "type": "string", "minLength": 1 },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "openBrowser": { "type": "boolean" },
+        "dataRoot": { "type": ["string", "null"], "description": "Absolute bootstrap path when configured; null uses the platform default." },
+        "camsnapExecutable": { "type": "string", "minLength": 1 },
+        "ffmpegExecutable": { "type": "string", "minLength": 1 }
+      }
+    },
+    "inference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "provider", "model", "timeoutMs", "maxAttempts", "maxRequestsPerSecond"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "provider": { "const": "moondream" },
+        "model": { "type": "string", "minLength": 1 },
+        "timeoutMs": { "type": "integer", "minimum": 1000, "maximum": 120000 },
+        "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "maxRequestsPerSecond": { "type": "integer", "minimum": 1, "maximum": 100, "description": "Explicit shared Moondream request-start limit. The launch default is the documented base-tier limit of 2 requests/second; do not infer account tier from the API key." }
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "protocol", "stream", "transport", "rtspClient", "rtspAuth"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "protocol": { "enum": ["rtsp", "rtsps"] },
+        "stream": { "enum": ["stream1", "stream2"] },
+        "transport": { "enum": ["tcp", "udp"] },
+        "rtspClient": { "enum": ["gortsplib", "ffmpeg"] },
+        "rtspAuth": { "enum": ["auto", "basic", "digest"] }
+      }
+    },
+    "console": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "selectedCameraId"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "selectedCameraId": { "type": ["string", "null"], "minLength": 1, "description": "Last camera selected in the local Console; null means no saved selection." }
+      }
+    },
+    "scheduler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "minIntervalMs", "maxIntervalMs", "overlapPolicy"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "minIntervalMs": { "type": "integer", "minimum": 1000 },
+        "maxIntervalMs": { "type": "integer", "minimum": 1000 },
+        "overlapPolicy": { "const": "drop" }
+      }
+    },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "framesPerSecond", "maxOutstandingInferences"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "framesPerSecond": { "type": "integer", "minimum": 4, "maximum": 8, "description": "Video frame-arrival cadence. Launch default 4 fps matches the lower bound of Moondream's current Photon Live Video 4–8 fps design target." },
+        "maxOutstandingInferences": { "type": "integer", "minimum": 1, "maximum": 8 }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "root"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "root": { "type": ["string", "null"], "description": "Absolute user-facing artifact root when configured; null uses the current user's Downloads/portus-qc-results directory." }
+      }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "root", "maxAgeDays", "maxFiles", "maxBytes"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "root": { "type": ["string", "null"] },
+        "maxAgeDays": { "type": "integer", "minimum": 1 },
+        "maxFiles": { "type": "integer", "minimum": 1 },
+        "maxBytes": { "type": "integer", "minimum": 1048576 }
+      }
+    }
+  }
+}

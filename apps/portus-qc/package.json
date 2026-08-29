@@ -1,0 +1,27 @@
+{
+  "name": "@portus-qc/app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx service/src/main.ts",
+    "doctor": "tsx service/src/doctor-cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:web": "node --check web/api.js && node --check web/camera-discovery.js && node --check web/icons.js && node --check web/lifecycle.js && node --check web/schedules.js && node --check web/settings.js && node --check web/ui.js && node --check web/video.js && node --check web/viewer.js && node --check web/app.js",
+    "test": "tsx --test test/*.test.mjs service/test/*.test.mjs",
+    "verify": "npm run typecheck && npm run check:web && npm run test"
+  },
+  "dependencies": {
+    "@portus-qc/camsnap": "0.0.0",
+    "@portus-qc/contracts": "0.0.0",
+    "@portus-qc/engine": "0.0.0",
+    "@portus-qc/inspection-config": "0.0.0",
+    "@portus-qc/vision": "0.0.0",
+    "sharp": "^0.35.4"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "license": "Apache-2.0",
+  "description": "Private workspace for the bundled local Portus QC application."
+}

@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "framesPerSecond": 4,
+  "maxOutstandingInferences": 1
+}

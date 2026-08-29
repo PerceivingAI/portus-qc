@@ -1,0 +1,11 @@
+node_modules/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+dist/
+coverage/
+.portus-qc/
+.p10-capture-profile-*/

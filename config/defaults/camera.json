@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "protocol": "rtsp",
+  "stream": "stream1",
+  "transport": "tcp",
+  "rtspClient": "gortsplib",
+  "rtspAuth": "auto"
+}

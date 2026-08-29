@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "root": null,
+  "maxAgeDays": 30,
+  "maxFiles": 5000,
+  "maxBytes": 5368709120
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@portus-qc/vision",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@portus-qc/contracts": "0.0.0"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.test.mjs",
+    "verify": "npm run typecheck && npm run test"
+  },
+  "license": "Apache-2.0",
+  "description": "Moondream native VisionProvider and visual-classifier reference adapters."
+}

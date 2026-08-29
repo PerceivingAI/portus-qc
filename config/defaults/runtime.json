@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "host": "127.0.0.1",
+  "port": 3210,
+  "openBrowser": true,
+  "dataRoot": null,
+  "camsnapExecutable": "camsnap",
+  "ffmpegExecutable": "ffmpeg"
+}

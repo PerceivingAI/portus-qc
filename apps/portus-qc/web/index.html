@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Portus QC</title>
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body>
+  <main class="console-shell" aria-label="Portus QC inspection console">
+    <header class="app-bar">
+      <h1><span class="app-title-accent">Portus</span>QC</h1>
+      <div class="app-bar-actions">
+        <button type="button" class="app-icon-button" id="camera-manager-button" aria-label="Manage cameras" aria-pressed="false" title="Manage cameras"><span data-lucide="grid-2x2"></span></button>
+        <button type="button" class="app-icon-button" id="settings-button" aria-label="Open settings" title="Settings"><span data-lucide="settings"></span></button>
+      </div>
+    </header>
+
+    <section class="visual-grid" aria-label="Inspection images">
+      <article class="visual-panel" id="source-panel">
+        <div class="camera-status" id="camera-status" data-state="no-camera" aria-live="polite"><span class="camera-status-dot"></span><span id="camera-status-label">No Camera</span></div>
+        <div class="camera-alias" id="camera-alias" hidden></div>
+        <div class="media-viewport" id="source-viewport" data-view="source">
+          <div class="empty-state"><strong>No camera feed</strong><span>Configure a camera and select its number.</span></div>
+        </div>
+        <header class="panel-header">
+          <div><span class="panel-kicker">INPUT</span><h2>Camera / Source</h2></div>
+          <div class="source-header-actions">
+            <div class="camera-slot-selectors" id="camera-slot-selectors" aria-label="Select active camera">
+              <button type="button" data-camera-slot="1" disabled>1</button>
+              <button type="button" data-camera-slot="2" disabled>2</button>
+              <button type="button" data-camera-slot="3" disabled>3</button>
+              <button type="button" data-camera-slot="4" disabled>4</button>
+            </div>
+            <div class="viewer-tools" data-tools="source">
+              <button type="button" data-view="source" data-action="zoom-out" aria-label="Zoom source out"><span data-lucide="minus"></span></button>
+              <button type="button" data-view="source" data-action="reset" class="zoom-value">100%</button>
+              <button type="button" data-view="source" data-action="zoom-in" aria-label="Zoom source in"><span data-lucide="plus"></span></button>
+              <button type="button" data-view="source" data-action="fullscreen" aria-label="View source full screen"><span data-lucide="maximize-2"></span></button>
+            </div>
+          </div>
+        </header>
+      </article>
+
+      <article class="visual-panel" id="result-panel">
+        <div class="media-viewport" id="result-viewport" data-view="result">
+          <div class="empty-state"><strong>No inspection result</strong><span>The inspection result will appear here.</span></div>
+        </div>
+
+        <section class="camera-manager" id="camera-manager" aria-label="Camera management" hidden>
+          <div class="camera-manager-topbar">
+            <div class="camera-manager-heading">
+              <span class="panel-kicker camera-manager-label">CAMERAS</span>
+              <div class="camera-manager-message" id="camera-manager-message" aria-live="polite"></div>
+            </div>
+            <div class="camera-manager-refresh-action">
+              <span class="camera-refresh-indicator" id="camera-refresh-indicator" aria-hidden="true"></span>
+              <button type="button" class="camera-manager-calibration-button camera-manager-refresh-button" id="camera-refresh-button">Refresh</button>
+            </div>
+          </div>
+          <div class="camera-slots" id="camera-slots" aria-label="Camera slots"></div>
+          <div class="camera-manager-help"><span>Drag the thumbnails to rearrange the cameras.</span></div>
+          <button type="button" class="camera-manager-calibration-button" id="calibration-button" disabled title="Calibration Report">Calibration</button>
+          <div class="camera-editor-overlay" id="camera-editor-overlay" hidden></div>
+        </section>
+
+        <header class="panel-header" id="result-panel-header">
+          <div><span class="panel-kicker" id="result-panel-kicker">OUTPUT</span><h2 id="result-panel-title">Result</h2></div>
+          <div class="result-header-actions" id="result-header-actions">
+            <span class="capability-badge" id="result-capability" hidden></span>
+            <div class="viewer-tools" data-tools="result">
+              <button type="button" data-view="result" data-action="zoom-out" aria-label="Zoom result out"><span data-lucide="minus"></span></button>
+              <button type="button" data-view="result" data-action="reset" class="zoom-value">100%</button>
+              <button type="button" data-view="result" data-action="zoom-in" aria-label="Zoom result in"><span data-lucide="plus"></span></button>
+              <button type="button" data-view="result" data-action="fullscreen" aria-label="View result full screen"><span data-lucide="maximize-2"></span></button>
+            </div>
+          </div>
+        </header>
+      </article>
+    </section>
+
+    <section class="control-panel" aria-label="Inspection controls">
+      <div class="control-columns">
+        <div class="control-column control-column-left">
+          <div class="left-mode-stack">
+            <fieldset class="radio-row compact-row input-mode-row"><legend>Input</legend><label><input type="radio" name="input-mode" value="image" checked> <span>Image</span></label><label><input type="radio" name="input-mode" value="video"> <span>Video</span></label><label><input id="file-input-mode" type="radio" name="input-mode" value="file"> <span>File</span></label></fieldset>
+            <input id="file-input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" hidden>
+            <fieldset class="radio-row compact-row"><legend>Mode</legend><label><input type="radio" name="trigger-mode" value="on-demand" checked> <span>On demand</span></label><label><input type="radio" name="trigger-mode" value="scheduled"> <span>Scheduled</span></label></fieldset>
+          </div>
+
+
+          <fieldset class="radio-row capability-row" id="capability-fieldset" disabled>
+            <legend>Capability</legend>
+            <div class="capability-primary-row">
+              <label><input type="radio" name="capability" value="detect"> <span>Detect<small>boxes</small></span></label>
+              <label><input type="radio" name="capability" value="segment"> <span>Segment<small>regions</small></span></label>
+              <label><input type="radio" name="capability" value="point"> <span>Point<small>markers</small></span></label>
+              <label><input type="radio" name="capability" value="caption"> <span>Caption<small>description</small></span></label>
+            </div>
+            <div class="capability-query-row">
+              <label><input type="radio" name="capability" value="query"> <span>Query<small>text answer</small></span></label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="control-column control-column-right">
+          <div class="artifact-field"><label for="artifact-root">Results folder</label><div class="path-control"><input id="artifact-root" type="text" spellcheck="false" autocomplete="off" placeholder="Downloads/portus-qc-results"><button type="button" id="pick-folder" class="icon-button" aria-label="Choose results folder" title="Choose results folder"><span data-lucide="folder-open"></span></button></div></div>
+          <div class="prompt-field"><label for="inspection-prompt">Prompt</label><textarea id="inspection-prompt" rows="2" maxlength="4000" placeholder="Describe what Moondream should inspect for." disabled></textarea></div>
+          <div class="action-row"><button type="button" class="primary-action" id="run-button" disabled><span id="run-label">Capture &amp; Inspect</span></button><div class="file-format-help"><span id="file-format-help" hidden>Supported formats: .jpg, .jpeg, .png</span><span id="video-format-help" hidden>Samples at 4 fps · runs until Stop</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="status-toast" id="status-toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+    <div class="settings-shell">
+      <header class="settings-header">
+        <h2 id="settings-title">Settings</h2>
+        <button type="button" class="dialog-close" id="settings-close" aria-label="Close settings"><span data-lucide="x"></span></button>
+      </header>
+      <section class="inference-settings" aria-label="Moondream settings">
+        <div class="settings-form-stack">
+          <label class="settings-field"><span>Model</span><input id="moondream-model" type="text" maxlength="200" autocomplete="off" value="moondream3.1-9B-A2B"></label>
+          <div class="settings-field inference-key-field">
+            <label for="moondream-api-key">API Key</label>
+            <div class="secret-input-control">
+              <input id="moondream-api-key" type="password" maxlength="4096" autocomplete="off" spellcheck="false" placeholder="Your API Key">
+              <button type="button" class="secret-visibility-toggle" id="moondream-api-key-toggle" aria-label="Show API Key" aria-pressed="false" title="Show API Key"><span data-lucide="eye"></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-message inference-message" id="moondream-message" aria-live="polite"></div>
+        <div class="inference-actions">
+          <button type="button" id="moondream-save" class="primary-settings-button">Save</button>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <dialog class="settings-dialog calibration-dialog" id="calibration-dialog" aria-labelledby="calibration-title">
+    <div class="settings-shell calibration-dialog-shell">
+      <header class="settings-header">
+        <div class="calibration-title-row"><h2 id="calibration-title">Calibration Report</h2><span class="camera-action-spinner calibration-spinner" id="calibration-spinner" aria-hidden="true"></span></div>
+        <button type="button" class="dialog-close" id="calibration-close" aria-label="Close calibration report"><span data-lucide="x"></span></button>
+      </header>
+      <section class="calibration-dialog-body">
+        <div class="settings-message calibration-message" id="calibration-message" aria-live="polite"></div>
+        <section class="calibration-report" id="calibration-report" aria-live="polite" hidden></section>
+      </section>
+    </div>
+  </dialog>
+
+  <dialog class="settings-dialog scheduled-tasks-dialog" id="scheduled-tasks-dialog" aria-labelledby="scheduled-tasks-title">
+    <div class="settings-shell scheduled-tasks-shell">
+      <header class="settings-header">
+        <h2 id="scheduled-tasks-title">Scheduled Tasks</h2>
+        <button type="button" class="dialog-close" id="scheduled-tasks-close" aria-label="Close scheduled tasks"><span data-lucide="x"></span></button>
+      </header>
+      <section class="scheduled-tasks-body">
+        <form id="schedule-form" class="schedule-editor" novalidate>
+          <div class="schedule-editor-heading">
+            <h3 id="schedule-editor-title">New Task</h3>
+            <span id="schedule-count">0 of 10 scheduled tasks</span>
+          </div>
+          <div class="settings-form-grid">
+            <label class="settings-field"><span>Camera</span><select id="schedule-camera" required></select></label>
+            <label class="settings-field"><span>Capability</span><select id="schedule-capability" required><option value="detect">Detect</option><option value="segment">Segment</option><option value="point">Point</option><option value="caption">Caption</option><option value="query">Query</option></select></label>
+            <label class="settings-field settings-field-wide"><span>Prompt</span><textarea id="schedule-prompt" rows="2" maxlength="4000" placeholder="Describe what Moondream should inspect for." required></textarea></label>
+          </div>
+          <div class="schedule-editor-timing">
+            <label class="schedule-interval-field"><span>Every</span><input id="schedule-interval-value" type="number" min="1" step="1" value="1" inputmode="numeric"><select id="schedule-interval-unit" aria-label="Schedule interval unit"><option value="seconds">seconds</option><option value="minutes" selected>minutes</option><option value="hours">hours</option></select></label>
+            <label class="schedule-enabled-field"><input id="schedule-enabled" type="checkbox" checked><span>Enabled</span></label>
+          </div>
+          <div class="settings-message schedule-message" id="schedule-message" aria-live="polite"></div>
+          <div class="schedule-editor-actions">
+            <button type="button" id="schedule-cancel-edit" class="secondary-button" hidden>Cancel Edit</button>
+            <button type="submit" id="schedule-save" class="primary-settings-button"><span id="schedule-save-label">Save Schedule</span></button>
+          </div>
+        </form>
+
+        <section class="scheduled-task-list-section" aria-labelledby="scheduled-task-list-title">
+          <div class="scheduled-task-list-heading"><h3 id="scheduled-task-list-title">Scheduled Tasks</h3></div>
+          <div class="scheduled-task-list" id="scheduled-task-list"></div>
+        </section>
+      </section>
+    </div>
+  </dialog>
+
+  <dialog class="camera-editor-dialog" id="camera-editor-dialog" aria-label="Camera editor">
+    <div class="camera-editor-shell">
+      <header class="settings-header camera-editor-header">
+        <div><span class="settings-kicker" id="camera-editor-kicker">ADD CAMERA 1</span></div>
+        <button type="button" class="dialog-close" id="camera-editor-close" aria-label="Close camera editor"><span data-lucide="x"></span></button>
+      </header>
+
+      <form id="camera-form" class="camera-editor-body" novalidate>
+        <div class="settings-form-grid camera-basic-grid">
+          <label class="settings-field"><span>Alias <small>optional</small></span><input id="camera-alias-input" name="alias" type="text" maxlength="120" autocomplete="off" placeholder="e.g. Packing Line"></label>
+          <label class="settings-field"><span>Host / IP</span><input id="camera-host" name="host" type="text" maxlength="255" autocomplete="off" placeholder="Select a discovered camera or enter IP" required></label>
+        </div>
+
+        <div class="credential-block">
+          <div class="credential-heading"><strong>Camera Credentials</strong></div>
+          <div class="credential-fields">
+            <label class="settings-field"><span>Username</span><input id="camera-username" name="username" type="text" maxlength="500" autocomplete="off"></label>
+            <label class="settings-field camera-password-field">
+              <span>Password</span>
+              <div class="secret-input-control">
+                <input id="camera-password" name="password" type="password" maxlength="2000" autocomplete="new-password">
+                <button type="button" class="secret-visibility-toggle" id="camera-password-toggle" aria-label="Show Password" aria-pressed="false" title="Show Password"><span data-lucide="eye"></span></button>
+              </div>
+              <span class="camera-password-help" id="camera-credential-help">Use RTSP/Camera Account Username and Password.</span>
+            </label>
+          </div>
+
+        <details class="camera-preparation">
+          <summary>How to get the RTSP/Camera Account Username and Password:</summary>
+          <div class="camera-preparation-body">
+            <ol>
+              <li>Log into the IP Camera's app.</li>
+              <li>Select the camera you want to configure.</li>
+              <li>Go to Settings/Advanced Settings.</li>
+              <li>Turn on Camera Account and create a Username and Password (These are separate from the app's credentials).</li>
+              <li>Reset your Camera.</li>
+            </ol>
+          </div>
+        </details>
+        </div>
+
+        <div class="settings-message" id="camera-settings-message" aria-live="polite"></div>
+
+        <div class="camera-connect-area">
+          <div class="camera-form-actions">
+            <span class="camera-action-spinner camera-connect-spinner" id="camera-connect-spinner" aria-hidden="true"></span>
+            <button type="submit" id="camera-connect-button" class="primary-settings-button"><span id="camera-connect-label">Connect</span></button>
+          </div>
+          <div class="camera-connect-warning"><span>Some cameras need to be reset after</span><span>multiple connection attempts.</span></div>
+        </div>
+
+        <details class="advanced-settings">
+          <summary>Advanced Camsnap settings</summary>
+          <div class="settings-form-grid advanced-grid">
+            <label class="settings-field"><span>Port <small>optional</small></span><input id="camera-port" name="port" type="number" min="1" max="65535" step="1" inputmode="numeric"></label>
+            <label class="settings-field"><span>Protocol</span><select id="camera-protocol" name="protocol"><option value="rtsp">RTSP</option><option value="rtsps">RTSPS</option></select></label>
+            <label class="settings-field"><span>Stream</span><select id="camera-stream" name="stream"><option value="stream1">Stream 1</option><option value="stream2">Stream 2</option></select></label>
+            <label class="settings-field"><span>Transport</span><select id="camera-transport" name="transport"><option value="tcp">TCP</option><option value="udp">UDP</option></select></label>
+            <label class="settings-field"><span>RTSP client</span><select id="camera-rtsp-client" name="rtspClient"><option value="gortsplib">gortsplib</option><option value="ffmpeg">FFmpeg</option></select></label>
+            <label class="settings-field"><span>RTSP auth</span><select id="camera-rtsp-auth" name="rtspAuth"><option value="auto">Auto</option><option value="basic">Basic</option><option value="digest">Digest</option></select></label>
+            <label class="settings-field settings-field-wide"><span>Path <small>optional</small></span><input id="camera-path" name="path" type="text" maxlength="1000" autocomplete="off" placeholder="Camera-specific RTSP path"></label>
+          </div>
+        </details>
+
+        <section class="camera-discovery-block" aria-label="Camera discovery">
+          <div class="camera-discovery-action">
+            <span class="camera-action-spinner camera-discovery-spinner" id="camera-discovery-spinner" aria-hidden="true"></span>
+            <button type="button" id="camera-discover-button" class="secondary-button">Discover Available Cameras</button>
+          </div>
+          <div class="camera-discovery-results" id="camera-discovery-results" aria-live="polite"></div>
+        </section>
+      </form>
+    </div>
+  </dialog>
+</body>
+</html>

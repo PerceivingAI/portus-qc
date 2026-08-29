@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "provider": "moondream",
+  "model": "moondream3.1-9B-A2B",
+  "timeoutMs": 30000,
+  "maxAttempts": 3,
+  "maxRequestsPerSecond": 2
+}

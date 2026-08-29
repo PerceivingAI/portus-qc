@@ -1,0 +1,11 @@
+{
+  "name": "@portus-qc/contracts",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "Apache-2.0",
+  "description": "Public media, vision, evidence, profile, screening, and calibration contracts."
+}

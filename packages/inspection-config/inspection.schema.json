@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://portus-qc.dev/schemas/inspection.schema.json",
+  "title": "Portus QC inspection definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "prompt", "capability"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "prompt": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "description": { "type": "string", "maxLength": 500 },
+    "capability": { "enum": ["query", "detect", "segment", "point", "caption"] }
+  }
+}
